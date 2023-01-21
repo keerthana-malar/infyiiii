@@ -6,5 +6,5 @@ index.tp -- installation guide (pending)
 index.tpl -- footer - InfyCRm text copyrights changed
 index.tpl -- devices.png image changed
 install.json - EspoCrm to infycrm name replaced
-header.tpl - version commanded and 1.0.0 text entered
+header.tpl - version commanded and 1.0.0 text entered {$version}
 footer.tpl - copyrights name changed to Infycrm
