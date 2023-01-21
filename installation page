@@ -1,3 +1,4 @@
+Install folder
 entry.php -- logo change : size 319 * 78
 index.tpl -- Favicon - meta header
 index.tpl -- welcome text changed in install page
@@ -5,3 +6,5 @@ index.tp -- installation guide (pending)
 index.tpl -- footer - InfyCRm text copyrights changed
 index.tpl -- devices.png image changed
 install.json - EspoCrm to infycrm name replaced
+header.tpl - version commanded and 1.0.0 text entered
+footer.tpl - copyrights name changed to Infycrm
