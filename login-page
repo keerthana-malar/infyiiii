@@ -8,9 +8,9 @@ add background
 
 body{
 add
-bg img
+bbackground-image:url("images/login.jpg");
 
 remove
-bg-gradient
-bg-size
+background:repeating-linear-gradient(354deg,var(--body-bg) -1000px,#254148 1000px,var(--body-bg) 3000px);
+background-size:100% 20000px;
 }
