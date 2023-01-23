@@ -1,1 +1,16 @@
-login.tpl
+glass.css
+
+.logo-container{
+  add margin
+  increase logo size
+}
+add background
+
+body{
+add
+bg img
+
+remove
+bg-gradient
+bg-size
+}
