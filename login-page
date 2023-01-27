@@ -4,6 +4,7 @@ glass.css
   add margin
   increase logo size
 }
+Create new folder in css/espo --> created folder -->images
 add background
 
 body{
@@ -14,3 +15,5 @@ remove
 background:repeating-linear-gradient(354deg,var(--body-bg) -1000px,#254148 1000px,var(--body-bg) 3000px);
 background-size:100% 20000px;
 }
+
+
