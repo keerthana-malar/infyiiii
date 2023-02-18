@@ -1,0 +1,53 @@
+name = createdBy.firstName;
+
+$checkin_d = datetime\today();
+$checkin_t = "09:45:00";
+$checkin_dt = string\concatenate($checkin_d," ", $checkin_t);
+
+
+$checkout_t = "19:00:00";
+$checkout_dt = string\concatenate($checkin_d," ", $checkout_t);
+
+$current_dt = datetime\now();
+
+ifThenElse(
+    attendancetype == "checkin",
+    checkintime = $current_dt,
+    checkouttime = $current_dt
+    );
+    
+$late_time = datetime\diff(checkintime , $checkin_dt , "minutes") + 330;
+
+    ifThenElse(
+        $late_time > 0 && attendancetype == 'checkin', 
+        late = string\concatenate($late_time ," minutes Late")
+        );
+
+
+      
+      
+        
+$overtime = datetime\diff(checkouttime , $checkout_dt , 'minutes')  + 330;
+
+        ifThen(
+        $overtime > 0 && attendancetype == 'checkout',
+        overtime = string\concatenate($overtime," minutes overtime")
+        );
+
+
+ifThen(
+    workingfrom == "office", 
+    locationStreet = "hari Complex";
+    locationCity = "Coimbatore";
+    locationState = "Tamilnadu";
+    locationPostalCode = 641035;
+    );
+    
+ifThen(
+    workingfrom == "outside", 
+    locationStreet = account.billingAddressStreet;
+    locationCity = account.billingAddressCity;
+    locationCountry = account.billingAddressCountry
+    locationPostalCode = account.billingAddressPostalCode;
+    locationState = account.billingAddressState;
+    );
