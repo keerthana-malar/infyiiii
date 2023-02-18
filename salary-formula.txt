@@ -1,0 +1,43 @@
+balance = user.userbalance;
+workingdays = user.workingdays;
+basicsalary = user.basicsalary;
+leaveTaken = user.leavetaken;
+name = user.userName;
+
+
+ifThen(
+    month == 'January' ||
+    month == 'March' ||
+    month == 'May' ||
+    month == 'July' ||
+    month == 'August' ||
+    month == 'October' ||
+    month == 'December',
+    totalsalary = (basicsalary/31) * workingdays + incentive - balance
+);
+
+ifThen(
+    month == 'April' ||
+    month == 'June' || 
+    month == 'September' ||
+    month =='November', 
+    
+    totalsalary = (basicsalary/30) * workingdays + incentive - balance
+    );
+    
+ifThen(
+    month == 'February' && leapyear == 'Yes', 
+    totalsalary = (basicsalary/29) * workingdays + incentive - balance
+);
+
+ifThen(
+    month == 'February' && leapyear == 'No', 
+    totalsalary = (basicsalary/28) * workingdays + incentive - balance
+);
+    
+ifThen(
+    salarystatus == 'approved', 
+    record\update('User', userId , 'workingdays' , 0);
+    record\update('User', userId , 'userbalance' , 0);
+    record\update('User', userId , 'leavetaken' , 0)
+);
