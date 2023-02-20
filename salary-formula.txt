@@ -36,7 +36,7 @@ ifThen(
 );
     
 ifThen(
-    salarystatus == 'approved', 
+    salarystatus == 'approved' && final == true, 
     record\update('User', userId , 'workingdays' , 0);
     record\update('User', userId , 'userbalance' , 0);
     record\update('User', userId , 'leavetaken' , 0)
