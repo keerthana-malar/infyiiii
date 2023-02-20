@@ -1,0 +1,8 @@
+name = user.userName;
+balance = user.userbalance;
+
+ifThen(
+    status == 'Approved' && final == true,
+    balance = user.userbalance + advanceAmount ;
+    record\update('User', userId, 'userbalance', balance )
+    );
