@@ -1,0 +1,8 @@
+name = createdBy.userName;
+balance = user.userbalance;
+
+ifThen(
+    status == 'Approved' && final == 'true',
+    balance = user.userbalance - amount;
+    record\update('User', createdById, 'userbalance', balance)
+    );
