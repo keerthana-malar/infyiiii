@@ -4,6 +4,8 @@ basicsalary = user.basicsalary;
 leaveTaken = user.leavetaken;
 name = user.userName;
 
+$per_id = array\at(user.empMpsIds, 0);
+
 
 ifThen(
     month == 'January' ||
@@ -36,8 +38,34 @@ ifThen(
 );
     
 ifThen(
-    salarystatus == 'approved' && final == true, 
-    record\update('User', userId , 'workingdays' , 0);
-    record\update('User', userId , 'userbalance' , 0);
-    record\update('User', userId , 'leavetaken' , 0)
+    salarystatus == 'approved' && final == true,
+        record\update('User', userId , 
+        'workingdays' , 0,
+        'userbalance' , 0,
+        'advance', 0,
+        'expense', 0,
+        'leavetaken' , 0,
+        'overtime', 0,
+        'latetime', 0,
+        'yearlysalary', user.yearlysalary + totalsalary,
+        'salary', totalsalary,
+        'yearlyincentive', user.yearlyincentive + incentive,
+        'incentive', incentive
+    );
+    record\update("EmpMp",$per_id, 
+    'salary', totalsalary, 
+    'incentive', incentive
+    )
 );
+
+ifThen(
+    salarystatus == 'approved' && final == true && month == 'December',
+    record\update('User', userId ,
+    'yearlyworkingdays' , 0,
+    'leavetakenyearly', 0,
+    'yearlypermissiontime', 0,
+    'overtimeyearly', 0,
+    'latetimeyearly', 0,
+    )
+);
+
