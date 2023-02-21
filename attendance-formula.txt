@@ -1,6 +1,5 @@
 name = createdBy.name;
 
-
 $checkin_d = datetime\today();
 $checkin_t = "09:45:00";
 $checkin_dt = string\concatenate($checkin_d," ", $checkin_t);
@@ -16,7 +15,7 @@ $lt = createdBy.leavetaken;
 $pt = createdBy.permissiontaken;
 $ot = createdBy.overtime;
 $la = createdBy.latetime;
-$ad = creadtedBy.advance;
+$ad = createdBy.advance;
 $ex = createdBy.expense;
 $sa = createdBy.salary;
 $in = createdBy.incentive;
@@ -25,18 +24,31 @@ $mo = datetime\format($current_dt, 'Asia/Kolkata', 'MM' );
 
 $yr = datetime\format($current_dt, 'Asia/Kolkata', 'YYYY');
 
+$per_id = array\at(createdBy.empMpsIds, 0);
+
 ifThenElse(
     attendancetype == "checkin",
     checkintime = $current_dt;
     record\update('User', createdById , 'workingdays' , $wd);
     record\update('User', createdById , 'yearlyworkingdays' , createdBy.yearlyworkingdays + 1);
-    ifThen(
+    ifThenElse(
     $wd <= "1" && $lt == "0",
     record\create('EmpMp',
         'name', name,
         'userId', createdById,
         'month', $mo,
         'year', $yr,
+        'workingdays', $wd,
+        'leaveTaken', $lt,
+        'permissionTime', $pt,
+        'overTime', $ot,
+        'lateTime', $la,
+        'advance', $ad,
+        'expense', $ex,
+        'salary', $sa,
+        'incentive', $in
+    ),
+    record\update('EmpMp', $per_id, 
         'workingdays', $wd,
         'leaveTaken', $lt,
         'permissionTime', $pt,
@@ -86,4 +98,35 @@ ifThen(
     locationCountry = account.billingAddressCountry
     locationPostalCode = account.billingAddressPostalCode;
     locationState = account.billingAddressState;
-    );  
+    ); 
+    
+    
+ifThen(
+    $mo == 01 && $lt == "0" && $wd <= "1",
+    record\create('EmpYp',
+        'name', name,
+        'userId', createdById,
+        'month', $mo,
+        'year', $yr,
+        'workingdays', $wd,
+        'leaveTaken', $lt,
+        'permissionTime', $pt,
+        'overTime', $ot,
+        'lateTime', $la,
+        'advance', $ad,
+        'expense', $ex,
+        'salary', $sa,
+        'incentive', $in
+    ),
+    record\update('EmpYp', $per_id, 
+        'workingdays', $wd,
+        'leaveTaken', $lt,
+        'permissionTime', $pt,
+        'overTime', $ot,
+        'lateTime', $la,
+        'advance', $ad,
+        'expense', $ex,
+        'salary', $sa,
+        'incentive', $in
+    )
+);
