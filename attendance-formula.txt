@@ -1,4 +1,5 @@
-name = createdBy.firstName;
+name = createdBy.name;
+
 
 $checkin_d = datetime\today();
 $checkin_t = "09:45:00";
@@ -18,22 +19,30 @@ ifThenElse(
     
 $late_time = datetime\diff(checkintime , $checkin_dt , "minutes") + 330;
 
-    ifThenElse(
-        $late_time > 0 && attendancetype == 'checkin', 
-        late = string\concatenate($late_time ," minutes Late")
+    ifThen(
+        $late_time > 0 && attendancetype == 'checkin',
+        late = string\concatenate($late_time ," minutes Late");
+        record\update('User', createdById , 'latetime', createdBy.latetime + $late_time);
+        record\update('User', createdById , 'latetimeyearly', createdBy.latetimeyearly + $late_time)
         );
 
-
-      
-      
-        
 $overtime = datetime\diff(checkouttime , $checkout_dt , 'minutes')  + 330;
 
         ifThen(
         $overtime > 0 && attendancetype == 'checkout',
-        overtime = string\concatenate($overtime," minutes overtime")
+        overtime = string\concatenate($overtime," minutes overtime");
+        record\update('User', createdById , 'overtime', createdBy.overtime + $overtime);
+        record\update('User', createdById , 'overtimeyearly', createdBy.overtimeyearly + $overtime)
         );
+        
+    
+    ifThen(
+     attendancetype == 'checkin',
+     record\update('User', createdById , 'workingdays' , createdBy.workingdays + 1);
+     record\update('User', createdById , 'yearlyworkingdays' , createdBy.yearlyworkingdays + 1)
+     );
 
+//Map
 
 ifThen(
     workingfrom == "office", 
@@ -51,3 +60,71 @@ ifThen(
     locationPostalCode = account.billingAddressPostalCode;
     locationState = account.billingAddressState;
     );
+
+
+$wd = 1; 
+$lt = 0;
+$pt = createdBy.permissiontaken;
+$ot = createdBy.overtime;
+$la = createdBy.latetime;
+$ad = creadtedBy.advance;
+$ex = createdBy.expense;
+$sa = createdBy.salary;
+$in = createdBy.incentive;
+
+$mo = datetime\format(
+       $current_dt, 'Asia\kolkata', 'MM' 
+    );
+
+$yr = datetime\format(
+       $current_dt, 'Asia\kolkata', 'YYYY' 
+    );
+
+ifThen(
+    $wd == 1 && $lt == 0, 
+    record\create('EmpMp',
+        'userId', createdById,
+        'month', $mo,
+        'year', $yr,
+        'workingdays', $wd,
+        'leaveTaken', $lt,
+        'permissionTime', $pt,
+        'overTime', $ot,
+        'lateTime', $la,
+        'advance', $ad,
+        'expense', $ex,
+        'salary', $sa,
+        'incentive', $in
+    )
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+   
