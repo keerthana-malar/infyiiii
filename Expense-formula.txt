@@ -1,8 +1,24 @@
 name = createdBy.userName;
-balance = user.userbalance;
+balance = createdBy.userbalance;
+
+$perMonthId = array\at(createdBy.empMpsIds, 0);
+$perYearId = array\at(createdBy.empYpsIds, 0);
 
 ifThen(
     status == 'approved' && final == true,
-    balance = user.userbalance - amount;
-    record\update('User', createdById, 'userbalance', balance)
+    $balanceCur = createdBy.userbalance - amount;
+    balance = $balanceCur;
+    $expenseAmt = createdBy.expense + amount;
+    $expenseAmtYear = createdBy.yearlyexpense + amount;
+    record\update('User', createdById , 
+        'userbalance', balance, 
+        'expense', $expenseAmt,
+        'yearlyexpense', $expenseAmtYear
     );
+    record\update('EmpMp', $perMonthId,
+        'expense', $expenseAmt
+    );
+    record\update('EmpYp', $perYearId,
+        'expense', $expenseAmtYear
+    );
+);
