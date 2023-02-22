@@ -23,9 +23,13 @@ $leaveTakenYear = createdBy.leavetakenyearly;
 $permissionTime = createdBy.permissiontaken;
 $permissionTimeYear = createdBy.yearlypermissiontime;
 $advanceAmt = createdBy.advance;
+$advanceAmtYear = createdBy.yearlyadvance;
 $expenseAmt = createdBy.expense;
-$salaryAmt = 0;
-$incentiveAmt = 0;
+$expenseAmtYear = createdBy.yearlyexpense;
+$salaryAmt = createdBy.salary;
+$salaryAmtYear = createdBy.yearlysalary;
+$incentiveAmt = createdBy.incentive;
+$incentiveAmtYear = createdBy.yearlyincentive;
 
 ifThenElse( attendancetype == "checkin",
     (
@@ -87,10 +91,10 @@ ifThenElse( attendancetype == "checkin",
                     'permissiontime', $permissionTimeYear,
                     'overtime', $overTime,
                     'latetime', $lateTimeYear,
-                    'advance', $advanceAmt,
-                    'expense', $expenseAmt,
-                    'salary', $salaryAmt,
-                    'incentive', $incentiveAmt
+                    'advance', $advanceAmtYear,
+                    'expense', $expenseAmtYear,
+                    'salary', $salaryAmtYear,
+                    'incentive', $incentiveAmtYear
                 )   
             ),
             (
@@ -149,4 +153,4 @@ ifThen(
     locationCountry = account.billingAddressCountry
     locationPostalCode = account.billingAddressPostalCode;
     locationState = account.billingAddressState;
-    );
+    );  
