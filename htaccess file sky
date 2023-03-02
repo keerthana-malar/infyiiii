@@ -1,0 +1,123 @@
+Cpanel main .htaccess file:
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+    <IfModule mod_setenvif.c>
+        # Netscape 4.x has some problems...
+        BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+        # Netscape 4.06-4.08 have some more problems
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+        # MSIE masquerades as Netscape, but it is fine
+        # BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+        # NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48
+        # the above regex won't work. You can use the following
+        # workaround to get the desired effect:
+        BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+
+        # Don't compress images
+        SetEnvIfNoCase Request_URI .(?:gif|jpe?g|png)$ no-gzip dont-vary
+    </IfModule>
+
+    <IfModule mod_headers.c>
+        # Make sure proxies don't deliver the wrong content
+        Header append Vary User-Agent env=!dont-vary
+    </IfModule>
+</IfModule>
+
+***********************************************************************************************************************
+cpanel >> public.html >> .htaccess file
+##
+# Specify a default charset
+#
+AddDefaultCharset utf-8
+
+RewriteEngine On
+
+##
+# Redirect from http to https
+#
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+##
+# Redirect from non www to www
+#
+# RewriteCond %{HTTP_HOST} !^www\. [NC]
+# RewriteRule ^ %{REQUEST_SCHEME}://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+##
+# Redirect from www to non www
+#
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ %{REQUEST_SCHEME}://%1%{REQUEST_URI} [L,R=301]
+
+##
+# Redirect trailing slashes
+#
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ %1 [L,R=301]
+
+##
+# Remove index.php from url
+#
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+##
+# Prevent directory access
+#
+Options -Indexes
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php81” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81___lsphp .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+**********************************************************************************************************************
+
+cpanel >> public.html >> Crm folder >> .htaccess
+<ifModule mod_headers.c>
+    Header always set Access-Control-Allow-Methods "POST, GET, PUT, PATCH, DELETE"
+</ifModule>
+
+DirectoryIndex index.php
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Forbid access. Not actual as redirect to `public` is applied.
+    # An extra security measure if redirect not fired.
+    RewriteRule ^/?data/ - [F]
+    RewriteRule ^/?application/ - [F]
+    RewriteRule ^/?custom/ - [F]
+    RewriteRule ^/?vendor/ - [F]
+    RewriteRule /?web\.config - [F]
+
+    # Forbid `public` dir.
+    RewriteCond %{ENV:REDIRECT_STATUS} !=200
+    RewriteRule ^/?public/? - [F,L]
+
+    # Skip redirect for `client` dir.
+    RewriteRule ^client/ - [L]
+
+    # Store base path.
+    RewriteCond %{REQUEST_URI}::$1 ^(.*?/)(.*)::\2$
+    RewriteRule ^(.*)$ - [E=BASE:%1]
+
+    # Add trailing slash.
+    RewriteCond %{DOCUMENT_ROOT}/%{ENV:BASE}/public/$1 -d
+    RewriteRule ^(.*?[^/])$ %{REQUEST_URI}/ [L,R=301,NE]
+
+    # Rewrite to `public` dir.
+    RewriteRule ^((?!public/).*)$ %{ENV:BASE}/public/$1 [L,NC]
+
+    RewriteRule .* - [E=HTTP_ESPO_CGI_AUTH:%{HTTP:Authorization}]
+</IfModule>
+*******************************************************************************************************************************
