@@ -1,0 +1,160 @@
+//name
+name = createdBy.name;
+
+//current date time month year
+$current_dt = datetime\now();
+$dateCur = datetime\format($current_dt, 'Asia/Kolkata', 'DD' );
+$monthCur = datetime\format($current_dt, 'Asia/Kolkata', 'MM' );
+$yearCur = datetime\format($current_dt, 'Asia/Kolkata', 'YYYY');
+
+//Check in Time
+$checkin_t = datetime\format(attendancetiming.checkintime, "Asia/Kolkata", "hh:mm A");
+$checkin_dt = string\concatenate(datetime\today()," ", $checkin_t);
+
+//Check out Time
+$checkout_t = datetime\format(attendancetiming.checkouttime, "Asia/Kolkata", "hh:mm A");;
+$checkout_dt = string\concatenate(datetime\today()," ", $checkout_t);
+
+//USer Details
+$workingDays = createdBy.workingdays + 1;
+$workingDaysYear = createdBy.yearlyworkingdays + 1;
+$leaveTaken = createdBy.leavetaken;
+$leaveTakenYear = createdBy.leavetakenyearly;
+$permissionTime = createdBy.permissiontaken;
+$permissionTimeYear = createdBy.yearlypermissiontime;
+$advanceAmt = createdBy.advance;
+$advanceAmtYear = createdBy.yearlyadvance;
+$expenseAmt = createdBy.expense;
+$expenseAmtYear = createdBy.yearlyexpense;
+$salaryAmt = 0;
+$salaryAmtYear = createdBy.yearlysalary;
+$incentiveAmt = 0;
+$incentiveAmtYear = createdBy.yearlyincentive;
+
+//main 
+
+if(attendancetype == "checkin"){
+    //1 checkin date time
+    checkintime = $current_dt;
+    
+    //2 late time find
+    $late_time = datetime\diff(checkintime, $checkin_dt, 'minutes')+330;
+    
+    //3 late time assign
+    if( $late_time > 0){
+        late = string\concatenate($late_time ," minutes Late");
+    }
+    
+    //4 calculate user late
+    $lateTime = createdBy.latetime + $late_time;
+    $lateTimeYear = createdBy.latetimeyearly + $late_time;
+    
+    //5 update details in user
+        record\update('User', createdById ,
+            'workingdays' , $workingDays, 
+            'yearlyworkingdays' , $workingDaysYear,
+            'latetime', $lateTime,
+            'latetimeyearly', $lateTimeYear
+        );
+        
+    //6 EMPMP Create and Update
+    if( $workingDays <= "1" && $leaveTaken == "0" ){
+        record\create('EmpMp',
+                    'name', name,
+                    'userId', createdById,
+                    'month', $monthCur,
+                    'year', $yearCur,
+                    'workingdays', $workingDays,
+                    'leaveTaken', $leaveTaken,
+                    'permissionTime', $permissionTime,
+                    'overTime', $overTime,
+                    'lateTime', $lateTime,
+                    'advance', $advanceAmt,
+                    'expense', $expenseAmt,
+                    'salary', $salaryAmt,
+                    'incentive', $incentiveAmt
+                )
+    }
+    else{
+        $perMonthId = array\at(createdBy.empMpsIds, 0);
+        record\update('EmpMp', $perMonthId, 
+            'workingdays', $workingDays,
+            'lateTime', $lateTime
+        )
+    }
+    //7 EMp YP Create and Update
+    if( $monthCur == "01" && $leaveTakenYear == "0" && $workingDaysYear <= "1" ){
+        record\create('EmpYp',
+                    'name', name,
+                    'userId', createdById,
+                    'year', $yearCur,
+                    'workingdays', $workingDaysYear,
+                    'leavetaken', $leaveTakenYear,
+                    'permissiontime', $permissionTimeYear,
+                    'overtime', $overTime,
+                    'latetime', $lateTimeYear,
+                    'advance', $advanceAmtYear,
+                    'expense', $expenseAmtYear,
+                    'salary', $salaryAmtYear,
+                    'incentive', $incentiveAmtYear
+                )
+    }
+    else{
+        $perYearId = array\at(createdBy.empYpsIds, 0);
+        record\update('EmpYp', $perYearId, 
+                    'workingdays', $workingDaysYear,
+                    'latetime', $lateTimeYear
+        )
+    }
+    //8 maps office / Outside
+    if(workingfrom == "office"){
+        locationStreet = "hari Complex";
+        locationCity = "Coimbatore";
+        locationState = "Tamilnadu";
+        locationPostalCode = 641035
+    }
+    else{
+        locationStreet = account.billingAddressStreet;
+        locationCity = account.billingAddressCity;
+        locationCountry = account.billingAddressCountry;
+        locationPostalCode = account.billingAddressPostalCode;
+        locationState = account.billingAddressState;
+    }
+    
+    
+}else{
+    //1
+    $perMonthId = array\at(createdBy.empMpsIds, 0);
+    $perYearId = array\at(createdBy.empYpsIds, 0);
+    
+    //2 check out time 
+    checkouttime = $current_dt;
+    
+    //3 overtime calculate
+    $over_time = datetime\diff(checkouttime , $checkout_dt , 'minutes')  + 330;
+    
+    //4 overtime assign 
+    if($over_time > 0){
+        overtime = string\concatenate($over_time," minutes overtime")
+    }
+    
+    //5 user ovetime calculation 
+    $overTime = createdBy.overtime + $over_time;
+    $overTimeYear = createdBy.overtimeyearly + $over_time;
+    
+    //6 update user overtime 
+    record\update('User', createdById , 
+            'overtime', $overTime,
+            'overtimeyearly', $overTimeYear
+        );
+        
+    //7 empmp overtime update
+     record\update('EmpMp', $perMonthId, 
+            'overTime', $overTime
+        );
+    
+    //7 empyp overtime update
+    record\update('EmpYp', $perYearId, 
+            'overtime', $overTimeYear
+        );
+}
