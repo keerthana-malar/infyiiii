@@ -13,4 +13,4 @@ footer : Main.html
 login.tpl
     .container-centering{top:45px !important;} .panel-heading{display :flex; justify-content:center; align items:center;}
 About.tpl : content change as InfyCRM
-Administration : side iframe remove
+Administration : side iframe remove (path:crm/client/res/templates/admin/index.tpl)
