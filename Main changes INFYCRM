@@ -5,7 +5,7 @@ Name change : install/core/i8n/en_US/install.json
 Footer.tpl : copyrights detail >> install/core/tpl
 Version change : application/espo/res/default/config.php
 Remove admininstration iframe : client/res/templates/admin/index.tpl
-Main footer: client/res/remplates/site/footer.tpl
+Main footer: client/res/templates/site/footer.tpl
 Footer: html/main.html >> footer
 Navbar : client/res/templates/site/navbar.tpl
 footer : Main.html
